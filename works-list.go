@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"sort"
 	"worksList/searchService"
 	"worksList/worksService"
 
@@ -13,6 +14,20 @@ import (
 type Author struct {
 	Name  string
 	Works []worksService.Work
+}
+
+func sortByName(arr []Author) {
+	sort.Slice(arr, func(i, j int) bool {
+		return arr[i].Name < arr[j].Name
+	})
+}
+
+func sortByRevision(arr []Author, sortType string) {
+	for _, author := range arr {
+		sort.Slice(author.Works, func(i, j int) bool {
+			return author.Works[i].Revision < author.Works[j].Revision
+		})
+	}
 }
 
 func main() {
@@ -45,6 +60,9 @@ func main() {
 		works := worksService.GetWorks(authorKey)
 		authors = append(authors, Author{Name: firstFound.AuthorsName[i], Works: works})
 	}
+
+	sortByName(authors)
+	sortByRevision(authors, *sortArg)
 
 	out, _ := yaml.Marshal(authors)
 
