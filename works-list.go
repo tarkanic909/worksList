@@ -5,10 +5,18 @@ import (
 	"fmt"
 	"os"
 	"worksList/searchService"
+	"worksList/worksService"
 )
+
+type Author struct {
+	Name  string
+	Works []worksService.Work
+}
 
 func main() {
 	exitCode := 0
+	var firstFound searchService.Doc
+	var authors []Author
 	bookArg := flag.String("book", "Lord of the rings", "book name")
 	sortArg := flag.String("sort", "asc", "sort by count of revision asc/desc")
 
@@ -30,6 +38,11 @@ func main() {
 		exitCode = 1
 	}
 
-	fmt.Println("book: ", *bookArg)
-	fmt.Println("sort: ", *sortArg)
+	firstFound = books[0]
+	for i, authorKey := range firstFound.AuthorsKey {
+		works := worksService.GetWorks(authorKey)
+		authors = append(authors, Author{Name: firstFound.AuthorsName[i], Works: works})
+	}
+
+	fmt.Println(authors)
 }
