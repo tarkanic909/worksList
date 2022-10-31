@@ -34,8 +34,11 @@ func sortByRevision(arr []Author, sortType string) {
 	}
 }
 
+func exit(code int) {
+	os.Exit(code)
+}
+
 func main() {
-	exitCode := 0
 
 	var firstFound searchService.Doc
 	var authors []Author
@@ -46,16 +49,12 @@ func main() {
 	bookArg := flag.String("book", "Lord of the rings", "book name")
 	sortArg := flag.String("sort", "asc", "sort by count of revision asc/desc")
 
-	defer func() {
-		os.Exit(exitCode)
-	}()
-
 	flag.Parse()
 
 	// check sort argument
 	if *sortArg != "asc" && *sortArg != "desc" {
 		fmt.Println("Bad sort argument!", "Use asc or desc!")
-		exitCode = 1
+		exit(1)
 	}
 
 	// search for books
@@ -63,7 +62,7 @@ func main() {
 
 	if len(books) == 0 {
 		fmt.Println("No book found!")
-		exitCode = 1
+		exit(1)
 	}
 
 	// get first item
