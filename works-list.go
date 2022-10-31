@@ -39,8 +39,10 @@ func main() {
 
 	var firstFound searchService.Doc
 	var authors []Author
+	var books []searchService.Doc
 	var isPrint string
 
+	// take cli arguments
 	bookArg := flag.String("book", "Lord of the rings", "book name")
 	sortArg := flag.String("sort", "asc", "sort by count of revision asc/desc")
 
@@ -50,18 +52,21 @@ func main() {
 
 	flag.Parse()
 
+	// check sort argument
 	if *sortArg != "asc" && *sortArg != "desc" {
 		fmt.Println("Bad sort argument!", "Use asc or desc!")
 		exitCode = 1
 	}
 
-	books := searchService.Search(*bookArg)
+	// search for books
+	books = searchService.Search(*bookArg)
 
 	if len(books) == 0 {
 		fmt.Println("No book found!")
 		exitCode = 1
 	}
 
+	// get first item
 	firstFound = books[0]
 	fmt.Print("First found: ")
 	colored := fmt.Sprintf("\x1b[%dm%s\x1b[0m", 34, firstFound.Title)
@@ -74,6 +79,7 @@ func main() {
 		isPrint = "y"
 	}
 
+	// populate authors slice
 	for i, authorKey := range firstFound.AuthorsKey {
 		works := worksService.GetWorks(authorKey)
 		authors = append(authors, Author{Name: firstFound.AuthorsName[i], Works: works})
