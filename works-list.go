@@ -6,6 +6,8 @@ import (
 	"os"
 	"worksList/searchService"
 	"worksList/worksService"
+
+	"gopkg.in/yaml.v3"
 )
 
 type Author struct {
@@ -44,5 +46,7 @@ func main() {
 		authors = append(authors, Author{Name: firstFound.AuthorsName[i], Works: works})
 	}
 
-	fmt.Println(authors)
+	out, _ := yaml.Marshal(authors)
+
+	fmt.Println(string(out))
 }
