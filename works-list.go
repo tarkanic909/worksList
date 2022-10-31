@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"worksList/searchService"
 )
 
 func main() {
@@ -19,6 +20,13 @@ func main() {
 
 	if *sortArg != "asc" && *sortArg != "desc" {
 		fmt.Println("Bad sort argument!", "Use asc or desc!")
+		exitCode = 1
+	}
+
+	books := searchService.Search(*bookArg)
+
+	if len(books) == 0 {
+		fmt.Println("No book found!")
 		exitCode = 1
 	}
 
