@@ -9,9 +9,9 @@ import (
 const url = "https://openlibrary.org/search.json?title="
 
 type Doc struct {
-	Title      string
-	AuthorName []string `json:"author_name"`
-	AuthorKey  []string `json:"author_key"`
+	Title       string
+	AuthorsName []string `json:"author_name"`
+	AuthorsKey  []string `json:"author_key"`
 }
 
 type SearchResponse struct {
