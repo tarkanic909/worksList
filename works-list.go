@@ -73,7 +73,7 @@ func main() {
 	fmt.Printf("Title: %v ", colored)
 	fmt.Printf("Authors: %v \n", strings.Join(firstFound.AuthorsName, ", "))
 
-	fmt.Print("Would you like to print list in stdout y/n (default: y) ? ")
+	fmt.Print("Would you like to print list in stdout ? [Y/n] : ")
 	fmt.Scanln(&isPrint)
 	if strings.TrimSpace(isPrint) == "" {
 		isPrint = "y"
