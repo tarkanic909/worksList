@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"strings"
 	"worksList/searchService"
 	"worksList/worksService"
 
@@ -25,6 +26,9 @@ func sortByName(arr []Author) {
 func sortByRevision(arr []Author, sortType string) {
 	for _, author := range arr {
 		sort.Slice(author.Works, func(i, j int) bool {
+			if sortType == "desc" {
+				return author.Works[i].Revision > author.Works[j].Revision
+			}
 			return author.Works[i].Revision < author.Works[j].Revision
 		})
 	}
@@ -32,8 +36,11 @@ func sortByRevision(arr []Author, sortType string) {
 
 func main() {
 	exitCode := 0
+
 	var firstFound searchService.Doc
 	var authors []Author
+	var isPrint string
+
 	bookArg := flag.String("book", "Lord of the rings", "book name")
 	sortArg := flag.String("sort", "asc", "sort by count of revision asc/desc")
 
@@ -56,6 +63,17 @@ func main() {
 	}
 
 	firstFound = books[0]
+	fmt.Print("First found: ")
+	colored := fmt.Sprintf("\x1b[%dm%s\x1b[0m", 34, firstFound.Title)
+	fmt.Printf("Title: %v ", colored)
+	fmt.Printf("Authors: %v \n", strings.Join(firstFound.AuthorsName, ", "))
+
+	fmt.Print("Would you like to print list in stdout y/n (default: y) ? ")
+	fmt.Scanln(&isPrint)
+	if strings.TrimSpace(isPrint) == "" {
+		isPrint = "y"
+	}
+
 	for i, authorKey := range firstFound.AuthorsKey {
 		works := worksService.GetWorks(authorKey)
 		authors = append(authors, Author{Name: firstFound.AuthorsName[i], Works: works})
@@ -66,5 +84,7 @@ func main() {
 
 	out, _ := yaml.Marshal(authors)
 
-	fmt.Println(string(out))
+	if isPrint == "y" || isPrint == "yes" {
+		fmt.Println(string(out))
+	}
 }
