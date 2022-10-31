@@ -2,11 +2,11 @@ package searchService
 
 import (
 	"encoding/json"
-	"strings"
+	"net/url"
 	"worksList/getClient"
 )
 
-const url = "https://openlibrary.org/search.json?title="
+const searchUrl = "https://openlibrary.org/search.json?title="
 
 type Doc struct {
 	Title       string
@@ -21,7 +21,7 @@ type SearchResponse struct {
 func Search(query string) []Doc {
 	var response SearchResponse
 
-	body := getClient.Get(url + strings.ReplaceAll(query, " ", "+"))
+	body := getClient.Get(searchUrl + url.QueryEscape(query))
 	json.Unmarshal([]byte(body), &response)
 
 	return response.Docs
