@@ -6,6 +6,7 @@ import (
 	"os"
 	"sort"
 	"strings"
+	bookservice "worksList/bookService"
 	"worksList/searchService"
 	"worksList/worksService"
 
@@ -41,6 +42,13 @@ func exit(code int) {
 	os.Exit(code)
 }
 
+func checkSortArgs(revArg *string, authArg *string) {
+	if *revArg != "asc" && *revArg != "desc" || *authArg != "asc" && *authArg != "desc" {
+		fmt.Println("Bad sort argument!", "Use asc or desc!")
+		exit(1)
+	}
+}
+
 func main() {
 
 	var firstFound searchService.Doc
@@ -50,24 +58,30 @@ func main() {
 
 	// take cli arguments
 	bookArg := flag.String("book", "Lord of the rings", "book name")
-	// idArg := flag.String("id", "Lord of the rings", "book name")
+	idArg := flag.String("id", "OL27448W", "Open Library ID number")
 	revArg := flag.String("revision", "asc", "sort by count of revision asc/desc")
 	authArg := flag.String("author", "asc", "sort by count of revision asc/desc")
 
 	flag.Parse()
 
-	// check sort argument
-	if *revArg != "asc" && *revArg != "desc" || *authArg != "asc" && *authArg != "desc" {
-		fmt.Println("Bad sort argument!", "Use asc or desc!")
-		exit(1)
+	// check sorting arguments
+	checkSortArgs(revArg, authArg)
+
+	book, err := bookservice.GetById(*idArg)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		exit(0)
 	}
 
+	fmt.Println(book)
+
 	// search for books
-	books = searchService.Search(*bookArg)
+	books = searchService.SearchByTitle(*bookArg)
 
 	if len(books) == 0 {
 		fmt.Println("No book found!")
-		exit(1)
+		exit(0)
 	}
 
 	// get first item

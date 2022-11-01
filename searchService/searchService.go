@@ -18,7 +18,7 @@ type SearchResponse struct {
 	Docs []Doc
 }
 
-func Search(query string) []Doc {
+func SearchByTitle(query string) []Doc {
 	var response SearchResponse
 
 	body := getClient.Get(searchUrl + url.QueryEscape(query))
