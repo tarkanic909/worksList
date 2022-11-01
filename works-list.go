@@ -17,8 +17,11 @@ type Author struct {
 	Works []worksService.Work
 }
 
-func sortByName(arr []Author) {
+func sortByName(arr []Author, sortType string) {
 	sort.Slice(arr, func(i, j int) bool {
+		if sortType == "desc" {
+			return arr[i].Name > arr[j].Name
+		}
 		return arr[i].Name < arr[j].Name
 	})
 }
@@ -47,12 +50,14 @@ func main() {
 
 	// take cli arguments
 	bookArg := flag.String("book", "Lord of the rings", "book name")
-	sortArg := flag.String("sort", "asc", "sort by count of revision asc/desc")
+	// idArg := flag.String("id", "Lord of the rings", "book name")
+	revArg := flag.String("revision", "asc", "sort by count of revision asc/desc")
+	authArg := flag.String("author", "asc", "sort by count of revision asc/desc")
 
 	flag.Parse()
 
 	// check sort argument
-	if *sortArg != "asc" && *sortArg != "desc" {
+	if *revArg != "asc" && *revArg != "desc" || *authArg != "asc" && *authArg != "desc" {
 		fmt.Println("Bad sort argument!", "Use asc or desc!")
 		exit(1)
 	}
@@ -84,8 +89,8 @@ func main() {
 		authors = append(authors, Author{Name: firstFound.AuthorsName[i], Works: works})
 	}
 
-	sortByName(authors)
-	sortByRevision(authors, *sortArg)
+	sortByName(authors, *authArg)
+	sortByRevision(authors, *revArg)
 
 	out, _ := yaml.Marshal(authors)
 
