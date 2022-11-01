@@ -6,7 +6,6 @@ import (
 	"os"
 	"sort"
 	"strings"
-	bookservice "worksList/bookService"
 	"worksList/searchService"
 	"worksList/worksService"
 
@@ -58,7 +57,6 @@ func main() {
 
 	// take cli arguments
 	bookArg := flag.String("book", "Lord of the rings", "book name")
-	idArg := flag.String("id", "OL27448W", "Open Library ID number")
 	revArg := flag.String("revision", "asc", "sort by count of revision asc/desc")
 	authArg := flag.String("author", "asc", "sort by count of revision asc/desc")
 
@@ -66,15 +64,6 @@ func main() {
 
 	// check sorting arguments
 	checkSortArgs(revArg, authArg)
-
-	book, err := bookservice.GetById(*idArg)
-
-	if err != nil {
-		fmt.Println(err.Error())
-		exit(0)
-	}
-
-	fmt.Println(book)
 
 	// search for books
 	books = searchService.SearchByTitle(*bookArg)
@@ -93,7 +82,8 @@ func main() {
 
 	fmt.Print("Would you like to print list in stdout ? [Y/n] : ")
 	fmt.Scanln(&isPrint)
-	if strings.TrimSpace(isPrint) == "" {
+	isPrint = strings.ToLower(strings.TrimSpace(isPrint))
+	if isPrint == "" {
 		isPrint = "y"
 	}
 
