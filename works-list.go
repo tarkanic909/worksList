@@ -96,7 +96,12 @@ func main() {
 	sortByName(authors, *authArg)
 	sortByRevision(authors, *revArg)
 
-	out, _ := yaml.Marshal(authors)
+	out, err := yaml.Marshal(authors)
+
+	if err != nil {
+		fmt.Println("Can not format output to yaml format!")
+		exit(0)
+	}
 
 	if isPrint == "y" || isPrint == "yes" {
 		fmt.Println(string(out))
