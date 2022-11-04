@@ -10,10 +10,10 @@ Executable binaries can be found in `bin` directory
 
 ### Options
 
-| Option  | Description                                                | Type     | Default           | Required? |
-| ------- | ---------------------------------------------------------- | -------- | ----------------- | --------- |
-| `-book` | Title of the book                                          | `string` | Lord of the rings | No        |
-| `-sort` | Option for sorting by count of revision. Options: asc/desc | `string` | asc               | No        |
+| Option  | Description                                                | Type     | Default    | Required? |
+| ------- | ---------------------------------------------------------- | -------- | ---------- | --------- |
+| `-isbn` | ISBN of the book                                           | `string` | 1617291781 | No        |
+| `-sort` | Option for sorting by count of revision. Options: asc/desc | `string` | asc        | No        |
 
 ### Example
 
