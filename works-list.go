@@ -6,7 +6,7 @@ import (
 	"os"
 	"sort"
 	"strings"
-	"worksList/searchService"
+	"worksList/bookService"
 	"worksList/worksService"
 
 	"gopkg.in/yaml.v3"
@@ -37,26 +37,20 @@ func sortByRevision(arr []Author, sortType string) {
 	}
 }
 
-func exit(code int) {
-	os.Exit(code)
-}
-
 func checkSortArgs(revArg *string, authArg *string) {
 	if *revArg != "asc" && *revArg != "desc" || *authArg != "asc" && *authArg != "desc" {
 		fmt.Println("Bad sort argument!", "Use asc or desc!")
-		exit(1)
+		os.Exit(1)
 	}
 }
 
 func main() {
 
-	var firstFound searchService.Doc
 	var authors []Author
-	var books []searchService.Doc
 	var isPrint string
 
 	// take cli arguments
-	bookArg := flag.String("book", "Lord of the rings", "book name")
+	isbnArg := flag.String("isbn", "1617291781", "book isbn")
 	revArg := flag.String("revision", "asc", "sort by count of revision asc/desc")
 	authArg := flag.String("author", "asc", "sort by count of revision asc/desc")
 
@@ -65,21 +59,24 @@ func main() {
 	// check sorting arguments
 	checkSortArgs(revArg, authArg)
 
-	// search for books
-	books = searchService.SearchByTitle(*bookArg)
+	book := bookService.GetBookByISBN(*isbnArg)
 
-	if len(books) == 0 {
+	if book.Title == "" {
 		fmt.Println("No book found!")
-		exit(0)
+		os.Exit(0)
 	}
 
-	// get first item
-	firstFound = books[0]
-	fmt.Print("First found: ")
-	colored := fmt.Sprintf("\x1b[%dm%s\x1b[0m", 34, firstFound.Title)
+	fmt.Print("Found: ")
+	colored := fmt.Sprintf("\x1b[%dm%s\x1b[0m", 34, book.Title)
 	fmt.Printf("Title: %v ", colored)
-	fmt.Printf("Authors: %v \n", strings.Join(firstFound.AuthorsName, ", "))
-
+	fmt.Printf("Authors:")
+	for i, a := range book.Authors {
+		fmt.Printf(" %v", a.Name)
+		if i != (len(book.Authors) - 1) {
+			fmt.Print(",")
+		}
+	}
+	fmt.Println()
 	fmt.Print("Would you like to print list in stdout ? [Y/n] : ")
 	fmt.Scanln(&isPrint)
 	isPrint = strings.ToLower(strings.TrimSpace(isPrint))
@@ -88,9 +85,9 @@ func main() {
 	}
 
 	// populate authors slice
-	for i, authorKey := range firstFound.AuthorsKey {
-		works := worksService.GetWorks(authorKey)
-		authors = append(authors, Author{Name: firstFound.AuthorsName[i], Works: works})
+	for _, author := range book.Authors {
+		works := worksService.GetWorks(strings.Split(author.Url, "/")[4])
+		authors = append(authors, Author{Name: author.Name, Works: works})
 	}
 
 	sortByName(authors, *authArg)
@@ -99,8 +96,8 @@ func main() {
 	out, err := yaml.Marshal(authors)
 
 	if err != nil {
-		fmt.Println("Can not format output to yaml format!")
-		exit(0)
+		fmt.Println("Can not format output to yaml format!", err.Error())
+		os.Exit(0)
 	}
 
 	if isPrint == "y" || isPrint == "yes" {
