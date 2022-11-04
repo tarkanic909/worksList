@@ -50,7 +50,7 @@ func main() {
 	var isPrint string
 
 	// take cli arguments
-	isbnArg := flag.String("isbn", "1617291781", "book isbn")
+	olidArg := flag.String("olid", "1617291781", "Openlibrary ID")
 	revArg := flag.String("revision", "asc", "sort by count of revision asc/desc")
 	authArg := flag.String("author", "asc", "sort by count of revision asc/desc")
 
@@ -59,7 +59,7 @@ func main() {
 	// check sorting arguments
 	checkSortArgs(revArg, authArg)
 
-	book := bookService.GetBookByISBN(*isbnArg)
+	book := bookService.GetBookByOLID(*olidArg)
 
 	if book.Title == "" {
 		fmt.Println("No book found!")

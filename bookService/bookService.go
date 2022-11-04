@@ -2,11 +2,11 @@ package bookService
 
 import (
 	"encoding/json"
-	"regexp"
+	"fmt"
 	"worksList/getClient"
 )
 
-const bookUrl = "https://openlibrary.org/api/books?bibkeys=ISBN:"
+const bookUrl = "https://openlibrary.org/books/"
 
 type BookResponse struct {
 	Book Book
@@ -20,17 +20,21 @@ type Book struct {
 	} `json:"authors"`
 }
 
-func GetBookByISBN(isbn string) Book {
-	var response BookResponse
-	// r := regexp.MustCompile(`\w+:[0-9]\d{1,13}`)
-	r := regexp.MustCompile(`\bISBN:\d{1,13}`)
+type BookOlid struct {
+	Title   string `json:"title"`
+	Authors []struct {
+		Key string `json:"key"`
+	} `json:"authors"`
+}
 
-	body := getClient.Get(bookUrl + isbn + "&format=json&jscmd=data")
+func GetBookByOLID(olid string) Book {
+	var response BookOlid
 
-	// replace ISBN:number with book
-	result := r.ReplaceAllString(string(body), "Book")
-	json.Unmarshal([]byte(result), &response)
+	body := getClient.Get(bookUrl + olid + ".json")
+	fmt.Println(string(body))
 
-	return response.Book
+	json.Unmarshal([]byte(body), &response)
+	fmt.Println(response)
 
+	return Book{Title: response.Title}
 }
