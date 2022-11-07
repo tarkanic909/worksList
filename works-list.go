@@ -50,7 +50,7 @@ func main() {
 	var isPrint string
 
 	// take cli arguments
-	olidArg := flag.String("olid", "1617291781", "Openlibrary ID")
+	olidArg := flag.String("olid", "OL32011221M", "Open Library ID")
 	revArg := flag.String("revision", "asc", "sort by count of revision asc/desc")
 	authArg := flag.String("author", "asc", "sort by count of revision asc/desc")
 
@@ -66,28 +66,24 @@ func main() {
 		os.Exit(0)
 	}
 
-	fmt.Print("Found: ")
 	colored := fmt.Sprintf("\x1b[%dm%s\x1b[0m", 34, book.Title)
 	fmt.Printf("Title: %v ", colored)
-	fmt.Printf("Authors:")
-	for i, a := range book.Authors {
-		fmt.Printf(" %v", a.Name)
-		if i != (len(book.Authors) - 1) {
-			fmt.Print(",")
-		}
-	}
 	fmt.Println()
+
+	// populate authors slice
+	fmt.Println("Author(s):")
+	for _, author := range book.Authors {
+		works := worksService.GetAllWorks(author.Key)
+		name := worksService.GetAuthorByKey(author.Key)
+		fmt.Println(name, len(works), "work(s)")
+		authors = append(authors, Author{Name: name, Works: works})
+	}
+
 	fmt.Print("Would you like to print list in stdout ? [Y/n] : ")
 	fmt.Scanln(&isPrint)
 	isPrint = strings.ToLower(strings.TrimSpace(isPrint))
 	if isPrint == "" {
 		isPrint = "y"
-	}
-
-	// populate authors slice
-	for _, author := range book.Authors {
-		works := worksService.GetWorks(strings.Split(author.Url, "/")[4])
-		authors = append(authors, Author{Name: author.Name, Works: works})
 	}
 
 	sortByName(authors, *authArg)
