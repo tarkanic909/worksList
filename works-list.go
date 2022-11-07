@@ -59,7 +59,7 @@ func main() {
 	// check sorting arguments
 	checkSortArgs(revArg, authArg)
 
-	book := bookService.GetBookByOLID(*olidArg)
+	book := bookService.GetBookByOLID(strings.ToUpper(strings.TrimSpace(*olidArg)))
 
 	if book.Title == "" {
 		fmt.Println("No book found!")
