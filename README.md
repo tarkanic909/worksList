@@ -10,15 +10,16 @@ Executable binaries can be found in `bin` directory
 
 ### Options
 
-| Option  | Description                                                | Type     | Default    | Required? |
-| ------- | ---------------------------------------------------------- | -------- | ---------- | --------- |
-| `-isbn` | ISBN of the book                                           | `string` | 1617291781 | No        |
-| `-sort` | Option for sorting by count of revision. Options: asc/desc | `string` | asc        | No        |
+| Option      | Description                                                | Type     | Default     | Required? |
+| ----------- | ---------------------------------------------------------- | -------- | ----------- | --------- |
+| `-olid`     | Open Library ID of the book                                | `string` | OL32011221M | No        |
+| `-author`   | Option for sorting by author name. Options: asc/desc       | `string` | asc         | No        |
+| `-revision` | Option for sorting by count of revision. Options: asc/desc | `string` | asc         | No        |
 
 ### Example
 
 ```bash
-worksList -book="Lord of the rings" -sort=asc
+worksList -olid="OL32011221M" -revision=asc -author=asc
 ```
 
 ### Help
