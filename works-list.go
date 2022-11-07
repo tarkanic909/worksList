@@ -61,6 +61,12 @@ func main() {
 
 	book := bookService.GetBookByOLID(strings.ToUpper(strings.TrimSpace(*olidArg)))
 
+	if book.Type.Key != "/type/edition" {
+		fmt.Println("Use olid of book!")
+		fmt.Println("Used type: " + strings.Split(book.Type.Key, "/")[2])
+		os.Exit(0)
+	}
+
 	if book.Title == "" {
 		fmt.Println("No book found!")
 		os.Exit(0)

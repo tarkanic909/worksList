@@ -12,6 +12,9 @@ type BookOlid struct {
 	Authors []struct {
 		Key string `json:"key"`
 	} `json:"authors"`
+	Type struct {
+		Key string
+	}
 }
 
 func GetBookByOLID(olid string) BookOlid {
